@@ -18,6 +18,5 @@
 		}
 	},
 	"remoteUser": "node",
-	"postCreateCommand": "npm run project-setup && npm install && npm run dev",
-	"forwardPorts": [1313]
+	"postCreateCommand": "npm run project-setup && npm install",
 }
