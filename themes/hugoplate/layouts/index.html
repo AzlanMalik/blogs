@@ -1,0 +1,84 @@
+{{ define "main" }}
+  <!-- Blog Header Section -->
+  <section>
+    <div class="container text-center">
+      <div
+        class="from-body to-light dark:from-darkmode-body dark:to-darkmode-light rounded-2xl bg-gradient-to-b px-8 py-14">
+        <h1>{{ .Title }}</h1>
+        <p class="mt-4">{{ .Description }}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Blog Listing Section -->
+  <section class="section">
+    <div class="container">
+      <div class="row gx-5">
+        <!-- Blog listing -->
+        <div class="lg:col-8">
+          <div class="row">
+            {{ $paginator := .Paginate (where site.RegularPages "Type" "blog") }}
+            {{ range $paginator.Pages }}
+              <div class="md:col-6 mb-14">
+                <div class="bg-body dark:bg-darkmode-body">
+                  {{ partial "components/blog-card" . }}
+                </div>
+              </div>
+            {{ end }}
+          </div>
+          <!-- Pagination -->
+          {{ if gt $paginator.TotalPages 1 }}
+            <div class="flex items-center justify-center">
+              <nav class="pagination">
+                {{ template "_internal/pagination.html" . }}
+              </nav>
+            </div>
+          {{ end }}
+        </div>
+        
+        <!-- Sidebar widgets -->
+        <div class="lg:col-4">
+          <!-- Categories widget -->
+          {{ if site.Taxonomies.categories }}
+            <div class="mb-8">
+              <h5 class="mb-6">Categories</h5>
+              <div class="bg-light dark:bg-darkmode-light rounded p-8">
+                <ul class="space-y-4">
+                  {{ range $name, $items := site.Taxonomies.categories }}
+                    <li>
+                      <a
+                        class="hover:text-primary dark:hover:text-darkmode-primary flex justify-between"
+                        href="{{ `categories/` | relLangURL }}{{ $name | urlize | lower }}">
+                        {{ $name | title }} <span>( {{ len $items }} )</span>
+                      </a>
+                    </li>
+                  {{ end }}
+                </ul>
+              </div>
+            </div>
+          {{ end }}
+
+          <!-- Tags widget -->
+          {{ if site.Taxonomies.tags }}
+            <div class="mb-8">
+              <h5 class="mb-6">Tags</h5>
+              <div class="bg-light dark:bg-darkmode-light rounded p-6">
+                <ul>
+                  {{ range $name, $items := site.Taxonomies.tags }}
+                    <li class="inline-block">
+                      <a
+                        class="hover:bg-primary dark:bg-darkmode-body dark:hover:bg-darkmode-primary dark:hover:text-text-dark m-1 block rounded bg-white px-3 py-1 hover:text-white"
+                        href="{{ `tags/` | relLangURL }}{{ $name | urlize | lower }}">
+                        {{ $name | title }}
+                      </a>
+                    </li>
+                  {{ end }}
+                </ul>
+              </div>
+            </div>
+          {{ end }}
+        </div>
+      </div>
+    </div>
+  </section>
+{{ end }}
