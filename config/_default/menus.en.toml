@@ -21,13 +21,3 @@ name = "Authors"
 url = "/authors"
 weight = 4
 
-# footer menu
-[[footer]]
-name = "Categories"
-url = "/categories"
-weight = 1
-
-[[footer]]
-name = "Tags"
-url = "/tags"
-weight = 2
