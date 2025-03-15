@@ -49,16 +49,10 @@ RUN npm run project-setup
     
 RUN npm i
 
-# Copy rest of the project files and build the static site
-COPY . .
 RUN npm run build
 
 # Production Stage: use a lightweight server to serve static files
 FROM nginx:alpine
-
-# Copy the built static site from the builder stage
-# Change 'build' below if your build output directory is different
-COPY --from=builder /public /usr/share/nginx/html
-
+COPY --from=builder /app/public /usr/share/nginx/html
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
