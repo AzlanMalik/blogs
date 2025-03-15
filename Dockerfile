@@ -1,4 +1,4 @@
-# Build Stage: use the official node image to build the static site
+# Use an official node image as a parent image
 FROM node:23 AS builder
 
 # Set environment variables for versions
@@ -10,7 +10,12 @@ RUN apt-get update && \
     apt-get install -y ca-certificates openssl git curl wget build-essential && \
     rm -rf /var/lib/apt/lists/*
 
-# Determine architecture and install Hugo Extended
+# Determine architecture
+RUN ARCH=$(uname -m) && \
+    if [ "$ARCH" = "aarch64" ]; then ARCH=arm64; else ARCH=amd64; fi && \
+    echo "Architecture: $ARCH"
+
+# Download and install Hugo Extended
 RUN ARCH=$(uname -m) && \
     if [ "$ARCH" = "aarch64" ]; then ARCH=arm64; else ARCH=amd64; fi && \
     wget -O hugo_extended_${HUGO_VERSION}.tar.gz https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_linux-${ARCH}.tar.gz && \
@@ -19,7 +24,7 @@ RUN ARCH=$(uname -m) && \
     rm hugo_extended_${HUGO_VERSION}.tar.gz && \
     echo "Hugo installed"
 
-# Determine architecture and install Go
+# Download and install Go
 RUN ARCH=$(uname -m) && \
     if [ "$ARCH" = "aarch64" ]; then ARCH=arm64; else ARCH=amd64; fi && \
     wget -O go${GO_VERSION}.linux-${ARCH}.tar.gz https://dl.google.com/go/go${GO_VERSION}.linux-${ARCH}.tar.gz && \
@@ -30,14 +35,16 @@ RUN ARCH=$(uname -m) && \
 # Export Go path
 ENV PATH=$PATH:/usr/local/go/bin
 
-# Optionally verify versions (can be removed if not needed)
+# Verify versions
 RUN git --version && \
     hugo version && \
     go version
 
-# Copy package files and install npm dependencies
-COPY package*.json ./
-RUN npm install
+COPY . .
+
+RUN npm run project-setup
+    
+RUN npm i
 
 # Copy rest of the project files and build the static site
 COPY . .
