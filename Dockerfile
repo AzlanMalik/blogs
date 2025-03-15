@@ -1,6 +1,8 @@
 # Use an official node image as a parent image
 FROM node:23 AS builder
 
+Workdir /app
+
 # Set environment variables for versions
 ARG HUGO_VERSION=0.144.2
 ARG GO_VERSION=1.24.0
@@ -39,6 +41,7 @@ ENV PATH=$PATH:/usr/local/go/bin
 RUN git --version && \
     hugo version && \
     go version
+
 
 COPY . .
 
