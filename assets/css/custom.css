@@ -1,1 +1,21 @@
 /* Add your own custom styles here */
+
+/* Custom styling for bold text */
+.content strong {
+  color: var(--color-bold);
+}
+
+/* For dark mode */
+.dark .content strong {
+  color: var(--color-darkmode-bold);
+}
+
+/* Custom styling for italic text */
+.content em {
+  color: var(--color-italic);
+}
+
+/* For dark mode */
+.dark .content em {
+  color: var(--color-darkmode-italic);
+}
